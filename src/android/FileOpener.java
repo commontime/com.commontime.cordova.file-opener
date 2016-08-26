@@ -19,16 +19,34 @@ public class FileOpener extends CordovaPlugin
     @Override
     public boolean execute(String action, JSONArray data, CallbackContext callbackContext) throws JSONException
     {
-        String filePath = data.getString(0);
-
-        filePath = filePath.replace("file://","").replace("%20"," ");
-
-        Uri uri = FileProvider.getUriForFile(cordova.getActivity(), cordova.getActivity().getPackageName() + ".fileprovider", new File(filePath));
+        String path = data.getString(0);
 
         Intent intent = new Intent(Intent.ACTION_VIEW);
-        intent.setData(uri);
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+
+        if(path.contains("file://"))
+        {
+            path = path.replace("file://", "").replace("%20", " ");
+
+            Uri uri = null;
+
+            if(path.contains("file:///android_asset"))
+            {
+                uri = Uri.parse(path);
+            }
+            else
+            {
+                uri = FileProvider.getUriForFile(cordova.getActivity(), cordova.getActivity().getPackageName() + ".fileprovider", new File(path));
+            }
+
+            intent.setData(uri);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+        }
+        else if(path.contains("http://"))
+        {
+            intent.setData(Uri.parse(path));
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        }
 
         try
         {
