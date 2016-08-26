@@ -2,6 +2,7 @@ package com.commontime.plugin;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.AssetManager;
 import android.database.Cursor;
 import android.net.Uri;
 import android.support.v4.content.FileProvider;
@@ -12,6 +13,9 @@ import org.json.JSONArray;
 import org.json.JSONException;
 
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.URISyntaxException;
 
 public class FileOpener extends CordovaPlugin
@@ -29,7 +33,7 @@ public class FileOpener extends CordovaPlugin
 
             if(path.contains("file:///android_asset"))
             {
-                uri = Uri.parse(path);
+                uri = copyReadAssets(path);
                 intent.setData(uri);
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             }
@@ -42,7 +46,7 @@ public class FileOpener extends CordovaPlugin
                 intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
             }
 
-            
+
         }
         else if(path.contains("http://"))
         {
@@ -90,4 +94,43 @@ public class FileOpener extends CordovaPlugin
 
         return null;
     }
+
+    private Uri copyReadAssets(String path)
+    {
+        AssetManager assetManager = cordova.getActivity().getAssets();
+
+        String fileName = path.substring(path.lastIndexOf("/")+1);
+
+        InputStream in = null;
+        OutputStream out = null;
+        File file = new File(cordova.getActivity().getFilesDir(), fileName);
+        try
+        {
+            in = assetManager.open(path.replace("file:///android_asset/", ""));
+            out = cordova.getActivity().openFileOutput(file.getName(), Context.MODE_WORLD_READABLE);
+
+            copyFile(in, out);
+            in.close();
+            in = null;
+            out.flush();
+            out.close();
+            out = null;
+        } catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+
+        return Uri.fromFile(file);
+    }
+
+    private void copyFile(InputStream in, OutputStream out) throws IOException
+    {
+        byte[] buffer = new byte[1024];
+        int read;
+        while ((read = in.read(buffer)) != -1)
+        {
+            out.write(buffer, 0, read);
+        }
+    }
+
 }
