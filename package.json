@@ -1,0 +1,30 @@
+{
+  "name": "com.commontime.cordova.file-opener",
+  "version": "1.0.0",
+  "description": "Commontime cordova thumbnail plugin.",
+  "cordova": {
+    "id": "com.commontime.cordova.file-opener",
+    "platforms": [
+      "android",
+      "ios"
+    ]
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/commontime/com.commontime.cordova.file-opener.git"
+  },
+  "keywords": [
+    "cordova",
+    "file",
+    "commontime",
+    "cordova-android"
+  ],
+  "engines": [
+    {
+      "name": "cordova",
+      "version": ">=3.0.0"
+    }
+  ],
+  "author": "Commontime Ltd",
+  "license": "MIT"
+}

@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<plugin xmlns="http://www.phonegap.com/ns/plugins/1.0"
+        id="com.commontime.cordova.fileopener"
+        version="1.0.0">
+
+  <name>FileOpener</name>
+
+  <asset src="www/fileopener.js" target="js/fileopener.js"/>
+
+  <js-module src="www/fileopener.js" name="fileopener">
+    <clobbers target="fileopener" />
+  </js-module>
+
+  <platform name="android">
+
+    <config-file target="res/xml/config.xml" parent="/*">
+      <feature name="FileOpener">
+        <param name="android-package" value="com.commontime.plugin.FileOpener"/>
+        <param name="onload" value="true" />
+      </feature>
+    </config-file>
+
+    <source-file src="src/android/FileOpener.java" target-dir="src/com/commontime/plugin/"/>
+    
+  </platform> 
+
+  <platform name="ios">
+
+    <config-file target="config.xml" parent="/widget">
+      <feature name="FileOpener">
+        <param name="ios-package" value="FileOpener" />
+      </feature>
+    </config-file>
+
+    <header-file src="src/ios/FileOpener.h" target-dir="FileOpenerPlugin"/>
+    <source-file src="src/ios/FileOpener.m" target-dir="FileOpenerPlugin"/>
+
+  </platform>
+
+  <platform name="wp7">
+    <source-file src="src/wp7/Hello.cs"/>
+  </platform>
+
+</plugin>
