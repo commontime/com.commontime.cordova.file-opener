@@ -31,18 +31,18 @@ public class FileOpener extends CordovaPlugin
 
         Uri uri = null;
 
-        if(path.contains("file://"))
+        if(path.contains("http://"))
+        {
+            intent.setData(Uri.parse(path));
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        }
+        else if(!path.contains("user-assets/"))
         {
             path = path.replace("file://", "").replace("%20", " ");
             uri = FileProvider.getUriForFile(cordova.getActivity(), cordova.getActivity().getPackageName() + ".fileprovider", new File(path));
             intent.setData(uri);
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-        }
-        else if(path.contains("http://"))
-        {
-            intent.setData(Uri.parse(path));
-            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         }
         else if(path.contains("user-assets/"))
         {
