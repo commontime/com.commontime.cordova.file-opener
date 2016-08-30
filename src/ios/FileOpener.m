@@ -8,11 +8,19 @@
 - (void)openFile:(CDVInvokedUrlCommand*)command
 {
     NSString* filePath = [[command arguments] objectAtIndex:0];
-    if (![filePath containsString:@"file:///"])
+    
+    if (![filePath containsString:@"user-assets/"])
     {
         filePath = [NSString stringWithFormat:@"%@%@", @"file:///", filePath];
-        filePath = [filePath stringByReplacingOccurrencesOfString:@" " withString:@"%20"];
     }
+    else if ([filePath containsString:@"user-assets/"])
+    {
+        NSString *appFolderPath = [[NSBundle mainBundle] resourcePath];
+        filePath = [NSString stringWithFormat :@"file://%@/www/%@", appFolderPath, filePath];
+    }
+    
+    filePath = [filePath stringByReplacingOccurrencesOfString:@" " withString:@"%20"];
+
     NSURL *filePathUrl = [NSURL URLWithString:filePath];
     UIDocumentInteractionController *documentInteractionViewController = [self setupControllerWithURL:filePathUrl usingDelegate:self];
     [documentInteractionViewController presentPreviewAnimated:YES];
