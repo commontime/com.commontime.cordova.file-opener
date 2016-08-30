@@ -1,6 +1,6 @@
 {
   "name": "com.commontime.cordova.file-opener",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "Commontime cordova thumbnail plugin.",
   "cordova": {
     "id": "com.commontime.cordova.file-opener",

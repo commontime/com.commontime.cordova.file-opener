@@ -6,6 +6,7 @@ import android.content.res.AssetManager;
 import android.database.Cursor;
 import android.net.Uri;
 import android.support.v4.content.FileProvider;
+import android.webkit.MimeTypeMap;
 
 import org.apache.cordova.CallbackContext;
 import org.apache.cordova.CordovaPlugin;
@@ -17,6 +18,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URISyntaxException;
+import java.util.Locale;
 
 public class FileOpener extends CordovaPlugin
 {
@@ -27,30 +29,29 @@ public class FileOpener extends CordovaPlugin
 
         Intent intent = new Intent(Intent.ACTION_VIEW);
 
+        Uri uri = null;
+
         if(path.contains("file://"))
         {
-            Uri uri = null;
-
-            if(path.contains("file:///android_asset"))
-            {
-                uri = copyReadAssets(path);
-                intent.setData(uri);
-                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            }
-            else
-            {
-                path = path.replace("file://", "").replace("%20", " ");
-                uri = FileProvider.getUriForFile(cordova.getActivity(), cordova.getActivity().getPackageName() + ".fileprovider", new File(path));
-                intent.setData(uri);
-                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-            }
-
-
+            path = path.replace("file://", "").replace("%20", " ");
+            uri = FileProvider.getUriForFile(cordova.getActivity(), cordova.getActivity().getPackageName() + ".fileprovider", new File(path));
+            intent.setData(uri);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
         }
         else if(path.contains("http://"))
         {
             intent.setData(Uri.parse(path));
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        }
+        else if(path.contains("user-assets/"))
+        {
+            if(!path.contains("www/"))
+            {
+                path = "www/" + path;
+            }
+            uri = copyReadAssets(path);
+            intent.setDataAndType(uri, getMimeType(path));
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         }
 
@@ -106,7 +107,7 @@ public class FileOpener extends CordovaPlugin
         File file = new File(cordova.getActivity().getFilesDir(), fileName);
         try
         {
-            in = assetManager.open(path.replace("file:///android_asset/", ""));
+            in = assetManager.open(path);
             out = cordova.getActivity().openFileOutput(file.getName(), Context.MODE_WORLD_READABLE);
 
             copyFile(in, out);
@@ -130,6 +131,25 @@ public class FileOpener extends CordovaPlugin
         while ((read = in.read(buffer)) != -1)
         {
             out.write(buffer, 0, read);
+        }
+    }
+
+    public static String getMimeType(String url)
+    {
+        try
+        {
+            String extension = url;
+            int lastDot = extension.lastIndexOf('.');
+            if (lastDot != -1) {
+                extension = extension.substring(lastDot + 1);
+            }
+            extension = extension.toLowerCase(Locale.getDefault());
+            return MimeTypeMap.getSingleton().getMimeTypeFromExtension(extension);
+        }
+        catch(Exception e)
+        {
+            e.printStackTrace();
+            return null;
         }
     }
 
