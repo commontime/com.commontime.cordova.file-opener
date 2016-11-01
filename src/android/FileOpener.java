@@ -33,6 +33,7 @@ public class FileOpener extends CordovaPlugin
 
         if(path.contains("http://"))
         {
+            path = path.replace(" ", "%20");
             intent.setData(Uri.parse(path));
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         }
