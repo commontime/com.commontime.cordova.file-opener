@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <plugin xmlns="http://www.phonegap.com/ns/plugins/1.0"
         id="com.commontime.cordova.fileopener"
-        version="1.0.7">
+        version="1.0.8">
 
   <name>FileOpener</name>
 
@@ -21,6 +21,8 @@
     </config-file>
 
     <source-file src="src/android/FileOpener.java" target-dir="src/com/commontime/plugin/"/>
+
+    <framework src="com.android.support:support-v4:+" />
     
   </platform> 
 
