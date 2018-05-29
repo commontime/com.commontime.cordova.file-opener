@@ -22,7 +22,7 @@
 
     <source-file src="src/android/FileOpener.java" target-dir="src/com/commontime/plugin/"/>
 
-    <framework src="com.android.support:support-v4:+" />
+    <framework src="com.android.support:support-v4:24.1.1+" />
     
   </platform> 
 
