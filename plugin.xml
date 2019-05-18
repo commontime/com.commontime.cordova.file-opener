@@ -13,13 +13,6 @@
 
   <platform name="android">
 
-    <config-file target="res/xml/config.xml" parent="/*">
-      <feature name="FileOpener">
-        <param name="android-package" value="com.commontime.plugin.FileOpener"/>
-        <param name="onload" value="true" />
-      </feature>
-    </config-file>
-
     <source-file src="src/android/FileOpener.java" target-dir="src/com/commontime/plugin/"/>
 
     <framework src="com.android.support:support-v4:26.1.0" />
